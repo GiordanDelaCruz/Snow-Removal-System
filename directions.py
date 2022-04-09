@@ -7,7 +7,7 @@ import config
 apiKey= config.api_direction_key
 
 class Directions:
-    
+
     def __init__(self, origin, destination):
         self.origin = origin
         self.destination = destination
@@ -22,8 +22,8 @@ class Directions:
         self.remove_html_tags()
         self.calculate_ETA()
 
-    def set_tagged_route(self):        
-    #update values found in route 
+    def set_tagged_route(self):
+    #update values found in route
         response = requests.get(
             "https://maps.googleapis.com/maps/api/directions/json?origin={origin}&destination={destination}&key={APIkey}".format(origin=self.origin, destination = self.destination, APIkey = apiKey)
             )
@@ -32,13 +32,13 @@ class Directions:
         query = parse_json['routes'][0]['legs'][0]["steps"]
         for i in range(0, len(query)):
             self.tagged_route.append(query[i]["html_instructions"])
-    
+
     def get_tagged_route(self):
     #return the route WITH HTML tags
         return self.route
 
     def remove_html_tags(self):
-    #remove html tags found in route 
+    #remove html tags found in route
         for i in range(0, len(self.tagged_route)):
             text = cleanhtml(self.tagged_route[i])
             self.route.append(text)
@@ -55,7 +55,7 @@ class Directions:
         data = response.text
         parse_json = json.loads(data)
         self.ETA = parse_json['routes'][0]['legs'][0]["duration"]["text"]
-        
+
     def get_ETA(self):
     #return the ETA from origin to destination
         return self.ETA
@@ -70,8 +70,8 @@ class Directions:
 #--                             TESTING & DEBUGGING                                        --
 #--------------------------------------------------------------------------------------------
 def main():
-    origin = "99 Wellesley St W, Toronto, ON" 
-    destination = "Agincourt North Scarborough, Toronto ON" 
+    origin = "99 Wellesley St W, Toronto, ON"
+    destination = "Agincourt North Scarborough, Toronto ON"
     directionsObj = Directions(origin, destination)
 
     # tagged_text = directionsObj.get_tagged_route()
@@ -84,6 +84,3 @@ def main():
     print("From {} to {};\nETA: {}\n".format(origin, destination, ETA))
 
 # main()
-
-
-

@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
+
+
 import requests
 import json
-import config
-
-#directions api key
-apiKey= config.api_weather_key
 
 class Weather:
     
@@ -15,7 +13,7 @@ class Weather:
         self.longitude = 0
         self.weather = ''
         self.initialize()
-
+        print("The weather in {}: {}".format(self.city, self.weather))
     def get_coords(self):        
     #use weather api to get latitude and longtiude of toronto and store those values    
         response = requests.get(
@@ -31,7 +29,7 @@ class Weather:
     def get_weather(self):
     #use stored latitude and longitude needed to get weather data in weather api call
         response = requests.get(
-            "https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={apiKey}".format(lat=self.latitude,lon=self.longitude, apiKey = apiKey)
+            "https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid=9acbb4e08928a9db7363cebc8a569a00".format(lat=self.latitude,lon=self.longitude)
             )
         data = response.text
         parse_json = json.loads(data)
@@ -45,6 +43,6 @@ class Weather:
         self.get_weather()
         
         
-# tor = Weather("Toronto", "CA")
+tor = Weather("Toronto", "CA")
 # print(tor.weather)
 

@@ -1,6 +1,6 @@
 import requests
 import json
-from helper import *
+from helper import cleanhtml
 import config
 
 #directions api key
@@ -60,7 +60,7 @@ def main():
     pretty_text = tor.get_pretty_route()
     tor.print_route(pretty_text)
 
-main()
+# main()
 
 
 

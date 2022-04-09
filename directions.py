@@ -19,6 +19,7 @@ class Directions:
         #create the route from origin to destination
         self.set_tagged_route()
         self.remove_html_tags()
+        self.print_route(self.get_route())
 
     def set_tagged_route(self):        
     #update values found in route 
@@ -29,7 +30,7 @@ class Directions:
         parse_json = json.loads(data)
         query = parse_json['routes'][0]['legs'][0]["steps"]
         for i in range(0, len(query)):
-            self.route.append(query[i]["html_instructions"])
+            self.tagged_route.append(query[i]["html_instructions"])
     
     def get_tagged_route(self):
     #read the values found in route
@@ -37,8 +38,8 @@ class Directions:
 
     def remove_html_tags(self):
     #remove html tags found in route 
-        for i in range(0, len(self.route)):
-            text = cleanhtml(self.route[i])
+        for i in range(0, len(self.tagged_route)):
+            text = cleanhtml(self.tagged_route[i])
             self.route.append(text)
 
     def get_route(self):
@@ -60,11 +61,11 @@ def main():
 
     # tagged_text = tor.get_tagged_route()
     # tor.print_route(tagged_text)
+    # tor.print_route(tor.get_route())
+    # clean_text = tor.get_route()
+    # tor.print_route(clean_text)
 
-    clean_text = tor.get_route()
-    tor.print_route(clean_text)
-
-# main()
+main()
 
 
 

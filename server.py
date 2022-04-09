@@ -4,8 +4,9 @@ import weather as wea
 
 def main():
     # Runnging Test Classes
-    # testWeather()
-    testDirections()
+    testWeather()
+    # testDirections()
+
    
 
 def testWeather():

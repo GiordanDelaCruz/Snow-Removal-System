@@ -11,16 +11,16 @@ class Directions:
     def __init__(self, origin, destination):
         self.origin = origin
         self.destination = destination
+        self.tagged_route = []
         self.route = []
-        self.pretty_route = []
         self.initialize()
 
     def initialize(self):
         #create the route from origin to destination
-        self.set_route()
-        self.set_pretty_route()
+        self.set_tagged_route()
+        self.remove_html_tags()
 
-    def set_route(self):        
+    def set_tagged_route(self):        
     #update values found in route 
         response = requests.get(
             "https://maps.googleapis.com/maps/api/directions/json?origin={origin}&destination={destination}&key={APIkey}".format(origin=self.origin, destination = self.destination, APIkey = apiKey)
@@ -31,19 +31,19 @@ class Directions:
         for i in range(0, len(query)):
             self.route.append(query[i]["html_instructions"])
     
-    def get_route(self):
+    def get_tagged_route(self):
     #read the values found in route
         return self.route
 
-    def set_pretty_route(self):
-    #update prettier values  found in route 
+    def remove_html_tags(self):
+    #remove html tags found in route 
         for i in range(0, len(self.route)):
             text = cleanhtml(self.route[i])
-            self.pretty_route.append(text)
+            self.route.append(text)
 
-    def get_pretty_route(self):
-    #read the prettier values found in route
-        return self.pretty_route
+    def get_route(self):
+    #read the cleaner values found in route
+        return self.route
 
     def print_route(self, route_list):
     #print out values inside list
@@ -57,8 +57,12 @@ def main():
     origin = "Agincourt+North+Scarborough+Toronto+ON"
     destination = "24+Sussex+Drive+Ottawa+ON"
     tor = Directions(origin, destination)
-    pretty_text = tor.get_pretty_route()
-    tor.print_route(pretty_text)
+
+    # tagged_text = tor.get_tagged_route()
+    # tor.print_route(tagged_text)
+
+    clean_text = tor.get_route()
+    tor.print_route(clean_text)
 
 # main()
 

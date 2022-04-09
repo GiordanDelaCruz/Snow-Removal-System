@@ -1,41 +1,51 @@
-import directions as dir
-import weather as wea
+# -*- coding: utf-8 -*-
 
+import pika
+from weather import weather
+# import utility
 
-def main():
-    # Runnging Test Classes
-    testWeather()
-    testDirections()
+connection = pika.BlockingConnection(
+    pika.ConnectionParameters(host='localhost'))
 
-   
+channel = connection.channel()
 
-def testWeather():
-    # Testing weather class
-    print("*********       Testing Weather Class      ***********\n")
-    city = "Toronto"
-    country = "CA"
-    weatherObj = wea.Weather(city, country)
-    print("Weather in {}: {}".format(city, weatherObj.weather))
+channel.queue_declare(queue='rpc_queue')
 
-def testDirections():
-     # Testing directions class
-    print("\n\n*********       Testing Directions Class      ***********\n")
-    origin = "Agincourt+North+Scarborough+Toronto+ON"
+def on_request(ch, method, props, body):
     
-    # Read neighbourhoods in text file
-    with open("n.txt") as f:
-        neighbors = f.readlines()
+    # nput = ["",""]
+    # n = str(body)
+
+    # nput = n.split(', ')
+    # current_weather = weather("Toronto", "CA")
     
-    count = 0
-    # Strips the newline character
-    for n in neighbors:
-        count += 1
-        destination = n.strip()
-        dir.Directions(origin, destination)
-        print("\nZone{}: {}".format(count, n.strip()))
+    # response = current_weather.toString()
+    
+    n = body.decode()
+    nput = n.split(', ')
+    if(nput[0] == 'driver'):
+        
+        response = n
+        
+        ch.basic_publish(exchange='',
+                         routing_key=props.reply_to,
+                         properties=pika.BasicProperties(correlation_id = \
+                                                             props.correlation_id),
+                         body=str(response))
+        ch.basic_ack(delivery_tag=method.delivery_tag)
 
-    # print("From {} to {}:\n".format(origin, destination))
-    # pretty_text = directionsObj.get_pretty_route()
-    # directionsObj.print_route(pretty_text)
+    elif(nput[0] == 'client'):
+        response = n
+        
+        ch.basic_publish(exchange='',
+                         routing_key=props.reply_to,
+                         properties=pika.BasicProperties(correlation_id = \
+                                                             props.correlation_id),
+                         body=str(response))
+        ch.basic_ack(delivery_tag=method.delivery_tag)
 
-main()
+channel.basic_qos(prefetch_count=1)
+channel.basic_consume(queue='rpc_queue', on_message_callback=on_request)
+
+print(" [x] Awaiting RPC requests")
+channel.start_consuming()

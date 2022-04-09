@@ -4,7 +4,7 @@
 import requests
 import json
 
-class Weather:
+class weather:
     
     def __init__(self, city, country):
         self.city = city
@@ -13,7 +13,7 @@ class Weather:
         self.longitude = 0
         self.weather = ''
         self.initialize()
-        print("The weather in {}: {}".format(self.city, self.weather))
+        print(self.toString())
     def get_coords(self):        
     #use weather api to get latitude and longtiude of toronto and store those values    
         response = requests.get(
@@ -36,13 +36,14 @@ class Weather:
         self.weather = parse_json['weather'][0]['main']
         return self.weather
     
+    def toString(self):
+        return "The weather in {}: {}".format(self.city, self.weather)
+    
     def initialize(self):
     #runs get_coords and get_weather so it does not need to be called seperately upon creation of
     #weather object
         self.get_coords()
         self.get_weather()
         
-        
-tor = Weather("Toronto", "CA")
 # print(tor.weather)
 

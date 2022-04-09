@@ -13,7 +13,7 @@ class weather:
         self.longitude = 0
         self.weather = ''
         self.initialize()
-        print(self.toString())
+        # print(self.toString())
     def get_coords(self):        
     #use weather api to get latitude and longtiude of toronto and store those values    
         response = requests.get(

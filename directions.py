@@ -1,7 +1,7 @@
 import requests
 import json
-from helper import cleanhtml
 import config
+import re
 
 #directions api key
 apiKey= config.api_direction_key
@@ -35,12 +35,17 @@ class Directions:
 
     def get_tagged_route(self):
     #return the route WITH HTML tags
-        return self.route
+        return self.route 
 
+    def cleanhtml(self, raw_html):
+    #clean a string by removing html tags
+        CLEANR = re.compile('<.*?>')
+        cleantext = re.sub(CLEANR, '', raw_html)
+        return cleantext
     def remove_html_tags(self):
     #remove html tags found in route
         for i in range(0, len(self.tagged_route)):
-            text = cleanhtml(self.tagged_route[i])
+            text = self.cleanhtml(self.tagged_route[i])
             self.route.append(text)
 
     def get_route(self):
@@ -84,3 +89,5 @@ def main():
     print("From {} to {};\nETA: {}\n".format(origin, destination, ETA))
 
 # main()
+
+

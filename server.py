@@ -11,19 +11,12 @@ channel = connection.channel()
 
 channel.queue_declare(queue='rpc_queue')
 dicts = utility.create_dictionaries()
-def on_request(ch, method, props, body):
-    
-    # nput = ["",""]
-    # n = str(body)
 
-    # nput = n.split(', ')
-    # current_weather = weather("Toronto", "CA")
-    
-    # response = current_weather.toString()
-    
+def on_request(ch, method, props, body):
+        
     n = body.decode()
     nput = n.split(', ')
-    if(weather('Toronto', 'CA').weather == "Clouds"):
+    if(weather('Toronto', 'CA').weather != "Snow"):
         if(nput[0] == 'driver'):
             print("[.] Received requests from 'driver'")
             response = dicts[0][nput[1]]
@@ -34,6 +27,7 @@ def on_request(ch, method, props, body):
                                                                  props.correlation_id),
                              body=str(response))
             ch.basic_ack(delivery_tag=method.delivery_tag)
+            print("[x] Sent response to 'driver'")
     
         elif(nput[0] == 'client'):
             print("[.] Received requests from 'client'")
@@ -45,11 +39,12 @@ def on_request(ch, method, props, body):
                                                                  props.correlation_id),
                              body=str(response))
             ch.basic_ack(delivery_tag=method.delivery_tag)
+            print("[x] Sent response to 'client'")
     else:
         response = "No vehicles are being dispatched since it is not snowing"
 
 channel.basic_qos(prefetch_count=1)
 channel.basic_consume(queue='rpc_queue', on_message_callback=on_request)
 
-print(" [x] Awaiting RPC requests")
+print("[x] Awaiting RPC requests")
 channel.start_consuming()

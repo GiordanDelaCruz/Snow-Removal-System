@@ -40,7 +40,7 @@ class SnowRemovalRpcClient(object):
 
 snow_removal_rpc = SnowRemovalRpcClient()
 
-print(" [x] Requesting weather(Toronto, CA)")
+print(" [x] Requesting estimated time of arrival")
 response = snow_removal_rpc.call("client, Agincourt South-Malvern West")
 decoded = response.decode()
-print(" [.] Got %r" % decoded)
+print(" [.] Received %r" % decoded)
